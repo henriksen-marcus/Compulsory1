@@ -273,6 +273,8 @@ void win(char player) {
     char ans{};
     std::cout << "Play again? (y/n): ";
     std::cin >> ans;
+    std::cin.clear();
+    std::cin.ignore(10000, '\n');
 
     if (ans == 'y' || ans == 'Y') {
         resetGame(0);
