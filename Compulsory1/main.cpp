@@ -1,7 +1,17 @@
+// Compulsory 1, Programming 1, Marcus Henriksen
+// In this program you can play tic tac toe versus another player or versus an "AI" that is based on random numbers.
+// The placement of X and Os is based on a WASD movement system, using a player X and Y variable, which will always
+// correspond to said X and Y position in the 2D array that is used to store the position of markers X and O.
+// The print function runs parallell to the 2D array and player X and Y position using a nested for loop and
+// iterators going from 0-2. The player X and Y does not go under 0 or above 2. The game is encased in a menu
+// system that lets you seamlessly move between gamemodes and exit or play again when you want. There has also
+// been implemented tamper-proofing code to prevent mistakes and intentional cheating/crashing of the game.
+
 #include <iostream>
 #include <Windows.h>    // Sleep()
 #include <conio.h>      // _getch()
 #include <time.h>       // time
+
 
 void printTable();      // Function that prints the table and markers
 void checkChar();       // Checks user input (WASD, Enter) and changes player XY position based on input
@@ -10,6 +20,7 @@ void checkScore();      // Checks if either player has won by comparing similar 
 void win(char player);  // Stops the game, determines which player won and prints it. Gives option to reset the game
 void resetGame(int i);  // Resets all variables, clears the 2D array and resumes the main while-loop
 void aiTurn();          // Decides where the AI should place the marker
+
 
 time_t currentTime;
 int playerX = 0;
@@ -30,7 +41,7 @@ char arr[3][3] = {
 int main()
 {
     srand((unsigned)time(&currentTime)); // Seed the rand function with the current time
-    system("color F");
+    system("color F"); // White
 
     int ans{};
     while (true) {
@@ -40,19 +51,28 @@ int main()
         std::cout << "2. Player vs AI" << std::endl;
         std::cout << "3. Exit" << std::endl;
 
-        std::cin >> ans;
-
-        if (ans == 1) { // PvP
-            aiMode = false;
+        while (true) {
+            std::cin >> ans;
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            
+            if (ans == 1) { // PvP
+                aiMode = false;
+                break;
+            }
+            else if (ans == 2) { // PvE
+                aiMode = true;
+                break;
+            }
+            else if (ans == 3) {
+                exit(0);
+            }
+            else {
+                std::cout << "Please enter a valid number." << std::endl;
+            }
         }
-        else if (ans == 2) { // PvE
-            aiMode = true;
-        }
-        else if (ans == 3) {
-            exit(0);
-        }
+        
         gameRunning = true;
-
         while (gameRunning) { //Keeps the game running until the player chooses to stop after a win
             system("cls");
             printTable();
@@ -64,11 +84,12 @@ int main()
                 Sleep(1000);
                 aiTurn();
             }
-
+            else {
+                std::cout << "Error in main function!";
+                exit(0);
+            }
         }
     }
-
-
 }
 
 
@@ -151,19 +172,6 @@ void checkChar() {
         Sleep(350); // Without this function call the screen will instanly be cleared, thus not showing the cout
         break;
     }
-
-    // These two blocks are imperative for the game to work,
-    // it clears the 2D array from the previous "*" so that you don't make a trail of stars.
-    for (int i = 0; i < 3; i++) {
-        for (int k = 0; k < 3; k++) {
-            if (arr[i][k] == 'X' || arr[i][k] == 'O') {
-                continue;
-            }
-            else {
-                arr[i][k] = ' ';
-            }
-        }
-    }
 }
 
 
@@ -180,14 +188,13 @@ void confirm() {
         }
     }
 
-    checkScore(); // Now that the value is inserted, I check if a player has won
-
     if (currentPlayer == 1) { //Switch players
         currentPlayer = 2;
     }
     else {
         currentPlayer = 1;
     }
+    checkScore(); // Now that the value is inserted, I check if a player has won
 }
 
 
@@ -234,7 +241,6 @@ void checkScore() { // Forgive me, it was the only way
 
 void win(char player) {
     gameWon = true;
-
     system("cls");
     printTable();
 
@@ -259,7 +265,7 @@ void win(char player) {
         else {
             system("color A");
         }
-        Sleep(210);
+        Sleep(200);
     }
 
     system("color F"); // Reset color
@@ -289,7 +295,7 @@ void resetGame(int i) {
 
     playerX = 0;
     playerY = 0;
-    currentPlayer = 2; // No idea why this works tbh lol
+    currentPlayer = 1;
 
     if (i == 1) {
         gameRunning = false;
