@@ -37,7 +37,6 @@ char arr[3][3] = {
 };
 
 
-
 int main()
 {
     srand((unsigned)time(&currentTime)); // Seed the rand function with the current time
@@ -90,6 +89,7 @@ int main()
             }
         }
     }
+    return 0;
 }
 
 
